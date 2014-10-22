@@ -33,7 +33,11 @@ var keyPress = function() {
   if (input == previousInput)
 	return;
   previousInput = input;
-  outputArea.innerHTML = compileString(input);
+  try {
+    outputArea.innerHTML = compileString(input);
+  } catch (exception) {
+    outputArea.innerHTML = "Uncaught JavaScript Exception:\n" + exception;
+  }
 }
 
 if (inputArea.addEventListener)
