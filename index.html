@@ -1,10 +1,17 @@
+<!doctype html>
 <html>
 <head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="chrome=1">
+<title>Solidity realtime compiler</title>
+<link rel="stylesheet" href="stylesheets/styles.css">
+<link rel="stylesheet" href="stylesheets/pygment_trac.css">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 <script src="soljs.js"></script>
 </head>
 <body>
-<h3>Solidity &quot;just-in-time&quot; compiler</h3>
-Source code on the left, compiled code and AST on the right (or error).<br/>
+<h1>Solidity realtime compiler</h1>
+Source code on the left, compiled code and AST on the right (or error).
 Do not use tabs - they will cause the caret for parser errors to be wrongly aligned.
 <table width="100%">
 <tr>
@@ -23,6 +30,9 @@ contract ExampleContract
 </td>
 </tr>
 </table>
+
+<p><small>Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+
 <script>
 var compileString = Module.cwrap("compileString", "string", ["string"]);
 var previousInput = '';
