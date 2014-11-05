@@ -50,7 +50,6 @@
  * Solidity scanner.
  */
 
-#include <cassert>
 #include <algorithm>
 #include <tuple>
 #include <libsolidity/Scanner.h>
@@ -113,11 +112,10 @@ void Scanner::reset(CharStream const& _source)
 }
 
 
-bool Scanner::scanHexNumber(char& o_scannedNumber, int _expectedLength)
+bool Scanner::scanHexByte(char& o_scannedByte)
 {
-	assert(_expectedLength <= 4);  // prevent overflow
 	char x = 0;
-	for (int i = 0; i < _expectedLength; i++)
+	for (int i = 0; i < 2; i++)
 	{
 		int d = HexValue(m_char);
 		if (d < 0)
@@ -128,7 +126,7 @@ bool Scanner::scanHexNumber(char& o_scannedNumber, int _expectedLength)
 		x = x * 16 + d;
 		advance();
 	}
-	o_scannedNumber = x;
+	o_scannedByte = x;
 	return true;
 }
 
@@ -175,7 +173,8 @@ Token::Value Scanner::skipSingleLineComment()
 
 Token::Value Scanner::skipMultiLineComment()
 {
-	assert(m_char == '*');
+	if (asserts(m_char == '*'))
+		BOOST_THROW_EXCEPTION(InternalCompilerError());
 	advance();
 	while (!isSourcePastEndOfInput())
 	{
@@ -420,15 +419,11 @@ bool Scanner::scanEscape()
 	case 't':
 		c = '\t';
 		break;
-	case 'u':
-		if (!scanHexNumber(c, 4))
-			return false;
-		break;
 	case 'v':
 		c = '\v';
 		break;
 	case 'x':
-		if (!scanHexNumber(c, 2))
+		if (!scanHexByte(c))
 			return false;
 		break;
 	}
@@ -512,7 +507,8 @@ Token::Value Scanner::scanNumber(char _charSeen)
 	// scan exponent, if any
 	if (m_char == 'e' || m_char == 'E')
 	{
-		assert(kind != HEX);  // 'e'/'E' must be scanned as part of the hex number
+		if (asserts(kind != HEX)) // 'e'/'E' must be scanned as part of the hex number
+			BOOST_THROW_EXCEPTION(InternalCompilerError());
 		if (kind != DECIMAL) return Token::ILLEGAL;
 		// scan exponent
 		addLiteralCharAndAdvance();
@@ -692,7 +688,8 @@ Token::Value Scanner::scanNumber(char _charSeen)
 
 static Token::Value KeywordOrIdentifierToken(string const& input)
 {
-	assert(!input.empty());
+	if (asserts(!input.empty()))
+		BOOST_THROW_EXCEPTION(InternalCompilerError());
 	int const kMinLength = 2;
 	int const kMaxLength = 10;
 	if (input.size() < kMinLength || input.size() > kMaxLength)
@@ -720,7 +717,8 @@ case ch:
 
 Token::Value Scanner::scanIdentifierOrKeyword()
 {
-	assert(IsIdentifierStart(m_char));
+	if (asserts(IsIdentifierStart(m_char)))
+		BOOST_THROW_EXCEPTION(InternalCompilerError());
 	LiteralScope literal(this);
 	addLiteralCharAndAdvance();
 	// Scan the rest of the identifier characters.
@@ -742,7 +740,8 @@ char CharStream::advanceAndGet()
 
 char CharStream::rollback(size_t _amount)
 {
-	assert(m_pos >= _amount);
+	if (asserts(m_pos >= _amount))
+		BOOST_THROW_EXCEPTION(InternalCompilerError());
 	m_pos -= _amount;
 	return get();
 }
