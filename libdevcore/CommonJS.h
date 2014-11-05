@@ -24,7 +24,8 @@
 #pragma once
 
 #include <string>
-#include <libethereum/Interface.h>
+#include <libdevcrypto/Common.h>
+#include "FixedHash.h"
 #include "Common.h"
 #include "CommonData.h"
 

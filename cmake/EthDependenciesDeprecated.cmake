@@ -53,7 +53,7 @@ else()
 		/usr/local/include
 		)
 	if ( LEVELDB_ID STREQUAL "LEVELDB_ID-NOTFOUND" )
-		message(FATAL_ERROR "Failed to find the LevelDB headers")
+		#message(FATAL_ERROR "Failed to find the LevelDB headers")
 	else ()
 		message(STATUS "Found LevelDB Headers")
 
@@ -174,10 +174,15 @@ else()
 	endif ()
 
 	if (LANGUAGES)
-		find_package(Boost 1.53 REQUIRED COMPONENTS thread date_time)
+		#find_package(Boost 1.53 REQUIRED COMPONENTS thread date_time)
 	else()
-		find_package(Boost 1.53 REQUIRED COMPONENTS thread date_time system regex)
+		#find_package(Boost 1.53 REQUIRED COMPONENTS thread date_time system regex)
 	endif()
+
+		include_directories(../boost_1_56_0)
+		set(Boost_THREAD_LIBRARY /home/christian/ethereum/boost_1_56_0/bin.v2/libs/thread/build/gcc/release/link-static/runtime-link-static/threading-multi/libboost_thread.a)
+		set(Boost_SYSTEM_LIBRARY /home/christian/ethereum/boost_1_56_0/bin.v2/libs/system/build/gcc/release/link-static/runtime-link-static/libboost_system.a)
+		set(Boost_REGEX_LIBRARY /home/christian/ethereum/boost_1_56_0/bin.v2/libs/regex/build/gcc/release/link-static/runtime-link-static/libboost_regex.a)
 
 	set(QTQML 1)
 endif()
