@@ -44,34 +44,53 @@ public:
 	bytes compileAndRun(std::string const& _sourceCode)
 	{
 		bytes code = dev::solidity::CompilerStack::compile(_sourceCode);
-		eth::Executive ex(m_state);
-		BOOST_REQUIRE(!ex.create(Address(), 0, m_gasPrice, m_gas, &code, Address()));
-		BOOST_REQUIRE(ex.go());
-		ex.finalize();
-		m_contractAddress = ex.newAddress();
-		return ex.out().toBytes();
+		sendMessage(code, true);
+		return m_output;
 	}
 
 	bytes callFunction(byte _index, bytes const& _data)
 	{
-		bytes data = bytes(1, _index) + _data;
-		eth::Executive ex(m_state);
-		BOOST_REQUIRE(!ex.call(m_contractAddress, Address(), 0, m_gasPrice, &data, m_gas, Address()));
-		BOOST_REQUIRE(ex.go());
-		ex.finalize();
-		return ex.out().toBytes();
+		sendMessage(bytes(1, _index) + _data, false);
+		return m_output;
 	}
 
-	bytes callFunction(byte _index, u256 const& _argument)
+	bytes callFunction(byte _index, u256 const& _argument1)
 	{
-		return callFunction(_index, toBigEndian(_argument));
+		callFunction(_index, toBigEndian(_argument1));
+		return m_output;
 	}
 
 private:
+	void sendMessage(bytes const& _data, bool _isCreation)
+	{
+		eth::Executive executive(m_state);
+		eth::Transaction t = _isCreation ? eth::Transaction(0, m_gasPrice, m_gas, _data)
+										 : eth::Transaction(0, m_gasPrice, m_gas, m_contractAddress, _data);
+		bytes transactionRLP = t.rlp();
+		try
+		{
+			// this will throw since the transaction is invalid, but it should nevertheless store the transaction
+			executive.setup(&transactionRLP);
+		}
+		catch (...) {}
+		if (_isCreation)
+		{
+			BOOST_REQUIRE(!executive.create(Address(), 0, m_gasPrice, m_gas, &_data, Address()));
+			m_contractAddress = executive.newAddress();
+			BOOST_REQUIRE(m_state.addressHasCode(m_contractAddress));
+		}
+		else
+			BOOST_REQUIRE(!executive.call(m_contractAddress, Address(), 0, m_gasPrice, &_data, m_gas, Address()));
+		BOOST_REQUIRE(executive.go());
+		executive.finalize();
+		m_output = executive.out().toBytes();
+	}
+
 	Address m_contractAddress;
 	eth::State m_state;
 	u256 const m_gasPrice = 100 * eth::szabo;
 	u256 const m_gas = 1000000;
+	bytes m_output;
 };
 
 BOOST_AUTO_TEST_SUITE(SolidityCompilerEndToEndTest)
