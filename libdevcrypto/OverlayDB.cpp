@@ -18,6 +18,7 @@
  * @author Gav Wood <i@gavwood.com>
  * @date 2014
  */
+#ifndef ETH_EMSCRIPTEN
 
 #include <libdevcore/Common.h>
 #include "OverlayDB.h"
@@ -97,3 +98,4 @@ void OverlayDB::kill(h256 _h)
 }
 
 }
+#endif // ETH_EMSCRIPTEN

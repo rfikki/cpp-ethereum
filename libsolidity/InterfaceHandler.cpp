@@ -1,3 +1,4 @@
+#ifndef ETH_EMSCRIPTEN
 
 #include <libsolidity/InterfaceHandler.h>
 #include <libsolidity/AST.h>
@@ -398,3 +399,5 @@ void InterfaceHandler::parseDocString(std::string const& _string, CommentOwner _
 
 } //solidity NS
 } // dev NS
+
+#endif // ETH_EMSCRIPTEN

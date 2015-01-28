@@ -18,6 +18,7 @@
  * @author Gav Wood <i@gavwood.com>
  * @date 2014
  */
+#ifndef ETH_EMSCRIPTEN
 
 #include <libdevcore/Common.h>
 #include "TrieDB.h"
@@ -26,3 +27,5 @@ using namespace dev;
 
 h256 const dev::c_shaNull = sha3(rlp(""));
 h256 const dev::EmptyTrie = c_shaNull;
+
+#endif // ETH_EMSCRIPTEN

@@ -20,6 +20,7 @@
  *   Marek Kotewicz <marek@ethdev.com>
  * @date 2014
  */
+#ifndef ETH_EMSCRIPTEN
 
 #include "CommonJS.h"
 
@@ -132,4 +133,4 @@ Address fromString(std::string const& _sn)
 }
 
 }
-
+#endif // ETH_EMSCRIPTEN

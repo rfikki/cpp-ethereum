@@ -19,6 +19,7 @@
  * @date 2015
  * Converts the AST into json format
  */
+#ifndef ETH_EMSCRIPTEN
 
 #include <libsolidity/ASTJsonConverter.h>
 #include <libsolidity/AST.h>
@@ -470,3 +471,5 @@ string ASTJsonConverter::getType(Expression const& _expression)
 
 }
 }
+
+#endif //ETH_EMSCRIPTEN

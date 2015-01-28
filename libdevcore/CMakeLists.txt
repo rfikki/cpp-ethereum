@@ -27,6 +27,7 @@ endif()
 
 target_link_libraries(${EXECUTABLE} ${Boost_THREAD_LIBRARIES})
 target_link_libraries(${EXECUTABLE} ${Boost_SYSTEM_LIBRARIES})
+#target_link_libraries(${EXECUTABLE} ${Boost_CHRONO_LIBRARIES})
 
 # transitive dependencies for windows executables
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
@@ -38,7 +39,9 @@ if (APPLE)
 	find_package(Threads REQUIRED)
 	target_link_libraries(${EXECUTABLE} ${CMAKE_THREAD_LIBS_INIT})
 elseif (UNIX)
+	if(NOT EMSCRIPTEN)
 	find_package(Threads REQUIRED)
+	endif()
 	target_link_libraries(${EXECUTABLE} ${CMAKE_THREAD_LIBS_INIT})
 endif()
 

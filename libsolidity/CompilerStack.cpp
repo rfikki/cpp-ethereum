@@ -29,7 +29,6 @@
 #include <libsolidity/NameAndTypeResolver.h>
 #include <libsolidity/Compiler.h>
 #include <libsolidity/CompilerStack.h>
-#include <libsolidity/InterfaceHandler.h>
 
 #include <libdevcrypto/SHA3.h>
 
@@ -260,8 +259,8 @@ string const& CompilerStack::getMetadata(string const& _contractName, Documentat
 	default:
 		BOOST_THROW_EXCEPTION(InternalCompilerError() << errinfo_comment("Illegal documentation type."));
 	}
-	if (!*doc)
-		*doc = contract.interfaceHandler->getDocumentation(*contract.contract, _type);
+//	if (!*doc)
+//		*doc = contract.interfaceHandler->getDocumentation(*contract.contract, _type);
 	return *(*doc);
 }
 
@@ -359,7 +358,7 @@ CompilerStack::Source const& CompilerStack::getSource(string const& _sourceName)
 	return it->second;
 }
 
-CompilerStack::Contract::Contract(): interfaceHandler(make_shared<InterfaceHandler>()) {}
+CompilerStack::Contract::Contract()/*: interfaceHandler(make_shared<InterfaceHandler>())*/ {}
 
 }
 }
